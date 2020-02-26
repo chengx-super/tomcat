@@ -418,12 +418,14 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         // Start our defined Container first
         if (engine != null) {
             synchronized (engine) {
+                //断点 启动 engine
                 engine.start();
             }
         }
 
         synchronized (executors) {
             for (Executor executor: executors) {
+                //断点 启动 executor
                 executor.start();
             }
         }
@@ -435,6 +437,7 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             for (Connector connector: connectors) {
                 // If it has already failed, don't try and start it
                 if (connector.getState() != LifecycleState.FAILED) {
+                    //断点 启动 connector
                     connector.start();
                 }
             }
@@ -512,6 +515,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
 
         super.initInternal();
 
+        // 先初始化 engine : 整个 catalina 的 servlet 引擎
+        //断点 初始化 engine 到 StandardEngine
         if (engine != null) {
             engine.init();
         }
@@ -521,6 +526,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
             if (executor instanceof JmxEnabled) {
                 ((JmxEnabled) executor).setDomain(getDomain());
             }
+            // 初始化 executor 连接池
+            //断点 初始化 executor
             executor.init();
         }
 
@@ -530,6 +537,8 @@ public class StandardService extends LifecycleMBeanBase implements Service {
         // Initialize our defined Connectors
         synchronized (connectorsLock) {
             for (Connector connector : connectors) {
+                // 初始化 connector
+                //断点 初始化 connector
                 connector.init();
             }
         }

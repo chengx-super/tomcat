@@ -1107,6 +1107,8 @@ public abstract class AbstractEndpoint<S,U> {
 
     private void bindWithCleanup() throws Exception {
         try {
+            // tomcat8.5 到 NioEndpoint
+            // tomcat9 也到 NioEndpoint
             bind();
         } catch (Throwable t) {
             // Ensure open sockets etc. are cleaned up if something goes
@@ -1119,6 +1121,7 @@ public abstract class AbstractEndpoint<S,U> {
 
 
     public final void init() throws Exception {
+        //断点 初始化
         if (bindOnInit) {
             bindWithCleanup();
             bindState = BindState.BOUND_ON_INIT;

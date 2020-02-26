@@ -46,8 +46,8 @@ public class CatalinaProperties {
 
 
     /**
-     * @param name The property name
-     * @return specified property value
+     * @param name The property name 属性名称
+     * @return specified property value 指定的属性值
      */
     public static String getProperty(String name) {
         return properties.getProperty(name);

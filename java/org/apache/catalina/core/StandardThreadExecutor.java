@@ -106,6 +106,7 @@ public class StandardThreadExecutor extends LifecycleMBeanBase
 
     @Override
     protected void initInternal() throws LifecycleException {
+        // 初始化 executor
         super.initInternal();
     }
 

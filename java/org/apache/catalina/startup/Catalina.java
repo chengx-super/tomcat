@@ -421,6 +421,7 @@ public class Catalina {
         if (log.isDebugEnabled()) {
             log.debug("Digester for server.xml created " + ( t2-t1 ));
         }
+        System.err.println("解析 server.xml 结束");
         return digester;
 
     }
@@ -536,7 +537,9 @@ public class Catalina {
 
     /**
      * Start a new server instance.
+     * 启动一个新的服务器实例
      */
+    // 通过 Bootstrap 调用 初始化 创建 server
     public void load() {
 
         if (loaded) {
@@ -546,6 +549,7 @@ public class Catalina {
 
         long t1 = System.nanoTime();
 
+        // 初始化文件夹
         initDirs();
 
         // Before digester - it may be needed
@@ -556,6 +560,9 @@ public class Catalina {
         File file = configFile();
 
         // Create and execute our Digester
+        // digester 解析 tomcat .xml 文件
+        // 解析 server.xml
+        //断点 初始化
         Digester digester = createStartDigester();
 
         try (ConfigurationSource.Resource resource = ConfigFileLoader.getSource().getServerXml()) {
@@ -581,6 +588,8 @@ public class Catalina {
 
         // Start the new server
         try {
+            // 启动服务
+            //断点 初始化
             getServer().init();
         } catch (LifecycleException e) {
             if (Boolean.getBoolean("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE")) {
@@ -630,6 +639,7 @@ public class Catalina {
 
         // Start the new server
         try {
+            //断点 启动
             getServer().start();
         } catch (LifecycleException e) {
             log.fatal(sm.getString("catalina.serverStartFail"), e);

@@ -961,6 +961,7 @@ public class Connector extends LifecycleMBeanBase  {
     @Override
     protected void initInternal() throws LifecycleException {
 
+        // 调用父类的初始化方法super.initInternal()
         super.initInternal();
 
         if (protocolHandler == null) {
@@ -969,6 +970,7 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         // Initialize adapter
+        // 初始化连接器
         adapter = new CoyoteAdapter(this);
         protocolHandler.setAdapter(adapter);
         if (service != null) {
@@ -1000,6 +1002,8 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         try {
+            // 初始化 protocolHandler
+            // 断点 初始化 到 AbstractHttp11Protocol
             protocolHandler.init();
         } catch (Exception e) {
             throw new LifecycleException(
@@ -1025,6 +1029,7 @@ public class Connector extends LifecycleMBeanBase  {
         setState(LifecycleState.STARTING);
 
         try {
+            //断点 启动 protocolHandler
             protocolHandler.start();
         } catch (Exception e) {
             throw new LifecycleException(

@@ -156,14 +156,21 @@ public final class Bootstrap {
         }
     }
 
-
+    /**
+     * 创建类加载器
+     *
+     * @param name
+     * @param parent
+     * @return
+     * @throws Exception
+     */
     private ClassLoader createClassLoader(String name, ClassLoader parent)
         throws Exception {
 
         String value = CatalinaProperties.getProperty(name + ".loader");
-        if ((value == null) || (value.equals("")))
+        if ((value == null) || (value.equals(""))){
             return parent;
-
+        }
         value = replace(value);
 
         List<Repository> repositories = new ArrayList<>();
@@ -244,11 +251,13 @@ public final class Bootstrap {
 
 
     /**
+     * bootstrap.init() 初始化操作
      * Initialize daemon.
      * @throws Exception Fatal initialization error
      */
     public void init() throws Exception {
 
+        // 初始化类加载器
         initClassLoaders();
 
         Thread.currentThread().setContextClassLoader(catalinaLoader);
@@ -283,6 +292,7 @@ public final class Bootstrap {
     private void load(String[] arguments) throws Exception {
 
         // Call the load() method
+        // 定义方法名
         String methodName = "load";
         Object param[];
         Class<?> paramTypes[];
@@ -295,11 +305,14 @@ public final class Bootstrap {
             param = new Object[1];
             param[0] = arguments;
         }
+        // 选择调用类
         Method method =
             catalinaDaemon.getClass().getMethod(methodName, paramTypes);
         if (log.isDebugEnabled()) {
             log.debug("Calling startup class " + method);
         }
+        // 调用 catalina load() 方法
+        //断点 初始化
         method.invoke(catalinaDaemon, param);
     }
 
@@ -340,6 +353,8 @@ public final class Bootstrap {
         }
 
         Method method = catalinaDaemon.getClass().getMethod("start", (Class [])null);
+        // 调用 catalina start()
+        //断点 启动
         method.invoke(catalinaDaemon, (Object [])null);
     }
 
@@ -428,8 +443,8 @@ public final class Bootstrap {
 
 
     /**
-     * Main method and entry point when starting Tomcat via the provided
-     * scripts.
+     * Main method and entry point when starting Tomcat via the provided scripts.
+     * 通过提供的脚本启动Tomcat时的主要方法和入口点。
      *
      * @param args Command line arguments to be processed
      */
@@ -438,8 +453,10 @@ public final class Bootstrap {
         synchronized (daemonLock) {
             if (daemon == null) {
                 // Don't set daemon until init() has completed
+                // 在init（）完成之前不要设置守护程序
                 Bootstrap bootstrap = new Bootstrap();
                 try {
+                    // 初始化 主要创建 catalina 对象
                     bootstrap.init();
                 } catch (Throwable t) {
                     handleThrowable(t);
@@ -451,6 +468,9 @@ public final class Bootstrap {
                 // When running as a service the call to stop will be on a new
                 // thread so make sure the correct class loader is used to
                 // prevent a range of class not found exceptions.
+                // 作为服务运行时，停止调用将在新线程上
+                // 确保使用正确的类加载器
+                // 防止一系列未找到的类异常。
                 Thread.currentThread().setContextClassLoader(daemon.catalinaLoader);
             }
         }
